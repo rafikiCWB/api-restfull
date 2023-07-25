@@ -27,7 +27,7 @@ public class ProductController {
     public ResponseEntity<ProductModel> saveProduct(@RequestBody @Valid ProductRecordDto productRecordDto) {
         var productModel = new ProductModel();
         BeanUtils.copyProperties(productRecordDto, productModel);   // Copy all properties from productRecordDto to productModel
-        return ResponseEntity.status(HttpStatus.CREATED).body(productRepository.save(productModel));    // Return 201 Created status code
+        return ResponseEntity.status(HttpStatus.CREATED).body(productRepository.save(productModel));// Return 201 Created status code
     }
 
     @GetMapping("/products")
@@ -35,9 +35,9 @@ public class ProductController {
         List<ProductModel> productsList = productRepository.findAll();
         if (!productsList.isEmpty()) {
             for (ProductModel product : productsList) {
-                UUID id = product.getIdProduct();
-                product.add(linkTo(methodOn(ProductController.class).getOneProduct(id)).withSelfRel());
-                /*product.add(linkTo(methodOn(ProductController.class).getOneProduct(product.getIdProduct())).withSelfRel());*/
+//                UUID id = product.getIdProduct();
+//                product.add(linkTo(methodOn(ProductController.class).getOneProduct(id)).withSelfRel());
+                product.add(linkTo(methodOn(ProductController.class).getOneProduct(product.getIdProduct())).withSelfRel());
             }
         }
         return ResponseEntity.status(HttpStatus.OK).body(productsList);
@@ -52,8 +52,10 @@ public class ProductController {
         productO.get().add(linkTo(methodOn(ProductController.class).getAllProduct()).withRel("Products List"));
         return ResponseEntity.status(HttpStatus.OK).body(productO.get());
     }
-    /*@GetMapping("/products/{id}")
-    public ResponseEntity<Object> getOneProduct(@PathVariable(value = "id") UUID id) {
+
+  /*  //Outra fora de fazer o método acima getOneProduct
+    @GetMapping("/products/{id}")
+    public ResponseEntity<Object> getOneProduct2(@PathVariable(value = "id") UUID id) {
         Optional<ProductModel> productO = productRepository.findById(id);
         return productO.<ResponseEntity<Object>>map(productModel
                 -> ResponseEntity.status(HttpStatus.OK).body(productModel)).orElseGet(()
@@ -71,6 +73,7 @@ public class ProductController {
         BeanUtils.copyProperties(productRecordDto, productModel);
         return ResponseEntity.status(HttpStatus.OK).body(productRepository.save(productModel));
     }
+
 
     @DeleteMapping("products/{id}")
     public ResponseEntity<Object> deleteProduct(@PathVariable(value = "id") UUID id) {
